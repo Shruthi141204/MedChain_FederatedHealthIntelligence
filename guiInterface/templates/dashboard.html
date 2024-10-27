@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Health Monitoring Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --card-bg: #ffffff;
+            --hover-color: #2980b9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .sidebar-menu {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+
+        .user-menu button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-menu button:hover {
+            background-color: var(--hover-color);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            font-size: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 15px;
+            background-color: #f7f9fc;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .metric:hover {
+            background-color: #e3e8ed;
+        }
+
+        .metric i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 50%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--accent-color);
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            .main-content {
+                order: 1;
+            }
+            .modal-content {
+                width: 90%;
+                margin: 20% auto;
+            }
+        }
+
+        .user-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--card-bg);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: var(--text-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--hover-color);
+    color: white;
+}
+
+.user-menu:hover .dropdown-content {
+    display: block;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <h1>Health Monitor</h1>
+            <ul class="sidebar-menu">
+                <li><a href="profile"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="main"><i class="fas fa-heartbeat"></i> Monitor</a></li>
+                <li><a href="reports"><i class="fas fa-file-alt"></i> Report</a></li>
+                <li><a href="challenges"><i class="fas fa-medal"></i> Challenges</a></li>
+                <li><a href="medication"><i class="fas fa-pills"></i> Medication & Treatment</a></li>
+                <li><a href="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="client"><i class="fa-solid fa-lock"></i> Model Updation</a></li>  
+            </ul>
+            
+        </nav>
+
+        <main class="main-content">
+            <header class="header">
+                <h2>Welcome User! Kindly navigate to the profile to update it!</h2>
+                <div class="user-menu">
+                    <button><i class="fas fa-user-circle"></i> User Menu</button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+
+                    </div>
+                </div>
+                
+            </header>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Heart Health</h3>
+                    <div class="card-content">
+                        <div class="metric" onclick="trackHeartRate()">
+                            <i class="fas fa-heartbeat"></i>
+                            <div class="metric-value">72 bpm</div>
+                            <div class="metric-label">Heart Rate</div>
+                        </div>
+                        <div class="metric" onclick="estimateBloodPressure()">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <div class="metric-value">120/80</div>
+                            <div class="metric-label">Blood Pressure</div>
+                        </div>
+                        <div class="metric" onclick="monitorCardiovascularHealth()">
+                            <i class="fas fa-heart"></i>
+                            <div class="metric-value">Good</div>
+                            <div class="metric-label">Cardiovascular</div>
+                        </div>
+                        <div class="metric" onclick="screenAFib()">
+                            <i class="fas fa-heartbeat"></i>
+                            <div class="metric-value">Normal</div>
+                            <div class="metric-label">AFib Status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Activity & Sleep</h3>
+                    <div class="card-content">
+                        <div class="metric" onclick="trackWorkout()">
+                            <i class="fas fa-running"></i>
+                            <div class="metric-value">5,230</div>
+                            <div class="metric-label">Steps</div>
+                        </div>
+                        <div class="metric" onclick="estimateCalories()">
+                            <i class="fas fa-fire"></i>
+                            <div class="metric-value">320</div>
+                            <div class="metric-label">Calories Burned</div>
+                        </div>
+                        <div class="metric" onclick="monitorSleep()">
+                            <i class="fas fa-bed"></i>
+                            <div class="metric-value">7h 20m</div>
+                            <div class="metric-label">Sleep Duration</div>
+                        </div>
+                        <div class="metric" onclick="monitorStress()">
+                            <i class="fas fa-brain"></i>
+                            <div class="metric-value">Low</div>
+                            <div class="metric-label">Stress Level</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Wellness Metrics</h3>
+                    <div class="card-content">
+                        <div class="metric" onclick="monitorRespiratoryRate()">
+                            <i class="fas fa-lungs"></i>
+                            <div class="metric-value">16</div>
+                            <div class="metric-label">Respiratory Rate</div>
+                        </div>
+                        <div class="metric" onclick="monitorHeartVariability()">
+                            <i class="fas fa-chart-line"></i>
+                            <div class="metric-value">65 ms</div>
+                            <div class="metric-label">Heart Rate Variability</div>
+                        </div>
+                        <div class="metric" onclick="alertPosture()">
+                            <i class="fas fa-user"></i>
+                            <div class="metric-value">Good</div>
+                            <div class="metric-label">Posture</div>
+                        </div>
+                        <div class="metric" onclick="monitorDailyHabits()">
+                            <i class="fas fa-calendar-check"></i>
+                            <div class="metric-value">8/10</div>
+                            <div class="metric-label">Habit Score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">User Profile</h2>
+            <div id="profileContent"></div>
+        </div>
+    </div>
+
+    <script>
+        
+        function closeModal() {
+        document.getElementById('profileModal').style.display = 'none';
+        }
+
+        // Add this new event listener to close the modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('profileModal')) {
+                closeModal();
+            }
+        };
+
+        
+    function logout() {
+        // Clear the current user from localStorage
+        if (localStorage.getItem('currentUser')) {
+            localStorage.removeItem('currentUser');
+        }
+
+        // Optionally show a logout message
+        alert('You have been logged out successfully.');
+
+        // Redirect to the login page
+        window.location.href = 'login.html'; // Modify this path to your actual login page
+    }
+
+    </script>

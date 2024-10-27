@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Challenges</title>
+    <style>
+        :root {
+            --primary-color: #303d4e;
+            --secondary-color: #2196F3;
+            --background-color: #f5f5f5;
+            --card-background: #ffffff;
+            --text-color: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .challenge-card {
+            background: var(--card-background);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .challenge-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            width: 60%;
+        }
+
+        .leaderboard {
+            background: var(--card-background);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .habit-tracker {
+            background: var(--card-background);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .habit-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .habit-day {
+            aspect-ratio: 1;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .habit-day.completed {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:hover {
+            background-color: #f8f8f8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn i {
+            font-size: 16px;
+        }
+    </style>
+
+    </style>
+</head>
+<body>
+    <a href="dashboard" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Dashboard
+    </a>
+    <header>
+        <h1>Health Challenges</h1>
+        <p>Complete challenges, earn rewards, and stay healthy!</p>
+    </header>
+
+    <div class="container">
+        <div class="challenges-grid">
+            <div class="challenge-card">
+                <h3>Daily Step Challenge</h3>
+                <p>Walk 10,000 steps today</p>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill"></div>
+                </div>
+                <p>6,000 / 10,000 steps</p>
+                <button>Join Challenge</button>
+            </div>
+
+            <div class="challenge-card">
+                <h3>Weekly Workout Streak</h3>
+                <p>Exercise for 30 minutes daily</p>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: 40%"></div>
+                </div>
+                <p>3/7 days completed</p>
+                <button>Join Challenge</button>
+            </div>
+
+            <div class="challenge-card">
+                <h3>Monthly Meditation</h3>
+                <p>Meditate for 10 minutes daily</p>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: 80%"></div>
+                </div>
+                <p>24/30 days completed</p>
+                <button>Join Challenge</button>
+            </div>
+        </div>
+
+        <div class="leaderboard">
+            <h2>Leaderboard</h2>
+            <div class="leaderboard-item">
+                <span>1. Sarah Johnson</span>
+                <span class="badge">2,500 points</span>
+            </div>
+            <div class="leaderboard-item">
+                <span>2. Mike Smith</span>
+                <span class="badge">2,300 points</span>
+            </div>
+            <div class="leaderboard-item">
+                <span>3. Emma Davis</span>
+                <span class="badge">2,100 points</span>
+            </div>
+        </div>
+
+        <div class="habit-tracker">
+            <h2>Weekly Habit Tracker</h2>
+            <div class="habit-grid">
+                <div class="habit-day completed">M</div>
+                <div class="habit-day completed">T</div>
+                <div class="habit-day completed">W</div>
+                <div class="habit-day">T</div>
+                <div class="habit-day">F</div>
+                <div class="habit-day">S</div>
+                <div class="habit-day">S</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

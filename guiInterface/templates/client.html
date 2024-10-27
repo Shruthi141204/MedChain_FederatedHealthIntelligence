@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Learning Client</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+/* Modern Color Palette and Variables */
+:root {
+    --primary-dark: #303d4e;
+    --primary-blue: #5296d5;
+    --primary-blue-light: #68a5dd;
+    --primary-dark-light: #3d4b5e;
+    --bg-gradient-start: #f8faff;
+    --bg-gradient-end: #edf2f7;
+    --text-light: #ffffff;
+    --text-secondary: #94a3b8;
+    --border-color: #e2e8f0;
+    --success-color: #22c55e;
+    --error-color: #ef4444;
+    --card-shadow: rgba(48, 61, 78, 0.1);
+    --animation-duration: 0.3s;
+}
+
+/* Base Styles with Gradient Background */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    color: var(--primary-dark);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Decorative Background Elements */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(80px);
+    opacity: 0.15;
+}
+
+body::before {
+    background: var(--primary-blue);
+    top: -100px;
+    right: -100px;
+}
+
+body::after {
+    background: var(--primary-dark);
+    bottom: -100px;
+    left: -100px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+    position: relative;
+}
+
+/* Enhanced Typography */
+h1 {
+    font-size: 2.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    letter-spacing: -0.02em;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    border-radius: 2px;
+}
+
+/* Enhanced Form Styling */
+form {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px var(--card-shadow),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform var(--animation-duration) ease,
+                box-shadow var(--animation-duration) ease;
+    position: relative;
+    overflow: hidden;
+}
+
+form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+}
+
+form:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 25px 50px var(--card-shadow),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Label Styling */
+label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    font-size: 0.95rem;
+    transition: color var(--animation-duration) ease;
+}
+
+/* Enhanced Input Fields */
+select,
+input[type="file"] {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    transition: all var(--animation-duration) ease;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary-dark);
+    font-size: 1rem;
+}
+
+select:hover,
+input[type="file"]:hover {
+    border-color: var(--primary-blue);
+    background: white;
+}
+
+select:focus,
+input[type="file"]:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 4px rgba(82, 150, 213, 0.15);
+    background: white;
+}
+
+/* Custom File Input Button */
+input[type="file"]::file-selector-button {
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    border: none;
+    background: var(--primary-dark);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 1rem;
+    transition: all var(--animation-duration) ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: var(--primary-dark-light);
+    transform: translateY(-1px);
+}
+
+/* Enhanced Submit Button */
+button[type="submit"] {
+    width: 100%;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--animation-duration) ease;
+    position: relative;
+    overflow: hidden;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(82, 150, 213, 0.2);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Gradient Overlay Animation on Button Hover */
+button[type="submit"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    opacity: 0;
+    transition: opacity var(--animation-duration) ease;
+}
+
+button[type="submit"]:hover::after {
+    opacity: 1;
+}
+
+/* Enhanced Flash Messages */
+.flash-message {
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 12px;
+    font-weight: 500;
+    animation: slideIn 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: var(--success-color);
+}
+
+.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--error-color);
+}
+
+/* Enhanced Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading State for Button */
+button[type="submit"].loading {
+    background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-dark) 100%);
+    background-size: 200% 100%;
+    animation: gradientShift 2s linear infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 100% 0%; }
+    100% { background-position: -100% 0%; }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .container {
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    form {
+        padding: 1.75rem;
+    }
+    
+    button[type="submit"] {
+        padding: 1rem;
+    }
+}
+
+/* Select Dropdown Customization */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23303d4e'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.5em;
+    padding-right: 2.5rem;
+}
+
+/* Focus Ring Animation */
+select:focus,
+input[type="file"]:focus,
+button:focus {
+    outline: none;
+    box-shadow: 
+        0 0 0 2px white,
+        0 0 0 4px var(--primary-blue);
+}
+
+/* Additional Animation for Form Elements on Page Load */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+form {
+    animation: fadeSlideUp 0.6s ease-out;
+}
+
+
+.back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:hover {
+            background-color: #f8f8f8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn i {
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="dashboard" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Dashboard
+    </a>
+    
+    <div class="container">
+        <h1>Federated Learning Client</h1>
+        <form action="/start_training" method="post" enctype="multipart/form-data">
+            <label for="model_type">Select Model:</label>
+            <select name="model_type" id="model_type" required>
+                <option value="ecg_model">ECG Model</option>
+                <option value="ecg_model_ARR">ECG_arrythmia Model</option>
+            </select><br><br>
+
+            <label for="file_upload">Upload CSV File:</label>
+            <input type="file" name="file_upload" id="file_upload" accept=".csv" required><br><br>
+
+            <button type="submit">Start Training</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

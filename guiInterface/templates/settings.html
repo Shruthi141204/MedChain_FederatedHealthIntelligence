@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - HealthCare App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .settings-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2196F3;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .setting-description {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #1976D2;
+        }
+
+        .device-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .device-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #2196F3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .device-info {
+            flex-grow: 1;
+        }
+
+        .device-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .device-status {
+            font-size: 14px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+        }
+         /* Add your custom styles */
+         .back-button {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border: none;
+            background-color: transparent;
+            color: #333;
+            font-size: 18px;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .back-button:hover {
+            color: #007bff; /* Change color on hover */
+        }
+
+        .back-icon {
+            margin-right: 8px;
+        }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:hover {
+            background-color: #f8f8f8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn i {
+            font-size: 16px;
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <a href="dashboard" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Dashboard
+    </a>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Settings</h1>
+        </div>
+        <a href="dashboard.html" class="back-button">
+            <i class="fas fa-arrow-left back-icon"></i>
+            Back to Dashboard
+        </a>
+
+        <div class="settings-section">
+            <h2 class="section-title">Account Settings</h2>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Two-Factor Authentication</div>
+                    <div class="setting-description">Enable extra security for your account</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Change Password</div>
+                    <div class="setting-description">Update your account password</div>
+                </div>
+                <button class="btn">Change</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h2 class="section-title">Notifications</h2>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Health Alerts</div>
+                    <div class="setting-description">Get notified about important health changes</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Medication Reminders</div>
+                    <div class="setting-description">Receive reminders for medication schedules</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Appointment Notifications</div>
+                    <div class="setting-description">Get updates about upcoming appointments</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h2 class="section-title">Connected Devices</h2>
+            <div class="device-card">
+                <div class="device-icon">S</div>
+                <div class="device-info">
+                    <div class="device-name">Smartwatch</div>
+                    <div class="device-status">Connected</div>
+                </div>
+                <button class="btn">Disconnect</button>
+            </div>
+            <div class="device-card">
+                <div class="device-icon">H</div>
+                <div class="device-info">
+                    <div class="device-name">Heart Rate Monitor</div>
+                    <div class="device-status">Connected</div>
+                </div>
+                <button class="btn">Disconnect</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h2 class="section-title">Privacy & Data Sharing</h2>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Share Data with Doctor</div>
+                    <div class="setting-description">Allow your doctor to access your health data</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Anonymous Data Collection</div>
+                    <div class="setting-description">Help improve our services</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

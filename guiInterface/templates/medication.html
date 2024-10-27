@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Medication Management - HealthCare App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background-color: #2196F3;
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .medication-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .medication-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #e3f2fd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #2196F3;
+            font-size: 20px;
+        }
+
+        .medication-info {
+            flex-grow: 1;
+        }
+
+        .medication-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .medication-time {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-taken {
+            background-color: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .treatment-progress {
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .schedule-time {
+            width: 80px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .schedule-details {
+            flex-grow: 1;
+            padding-left: 15px;
+            border-left: 2px solid #2196F3;
+        }
+
+        .prescription-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .prescription-title {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .prescription-date {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin-left: 5px;
+        }
+
+        .btn:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+        }
+
+        .btn-edit {
+            background-color: #FFA000;
+        }
+
+        .edit-form {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .alert {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:hover {
+            background-color: #f8f8f8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn i {
+            font-size: 16px;
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <a href="dashboard" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Dashboard
+    </a>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Medication Management</h1>
+        </div>
+
+        <div class="alert" id="reminder-alert">
+            <!-- Dynamically updated -->
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    Today's Medications
+                    <button class="btn" onclick="showAddMedicationForm()">Add New</button>
+                </div>
+                <div class="card-content" id="medications-list"></div>
+                <div id="medication-form-container"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Treatment Progress</div>
+                <div class="card-content" id="treatment-progress">
+                    <!-- Treatment progress will be dynamically loaded -->
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Medication Schedule
+                <button class="btn" onclick="showAddScheduleForm()">Add Schedule</button>
+            </div>
+            <div class="card-content" id="schedule-list"></div>
+            <div id="schedule-form-container"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Prescription History</div>
+            <div class="card-content" id="prescription-history"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data structures
+        let medications = [
+            {
+                id: 1,
+                name: "Aspirin",
+                time: "8:00 AM",
+                instruction: "Take with food",
+                status: "taken",
+                doctor: "Dr. Sarah Johnson"
+            }
+        ];
+
+        let schedules = [
+            {
+                id: 1,
+                time: "8:00 AM",
+                medication: "Aspirin 81mg",
+                instruction: "Take with breakfast"
+            }
+        ];
+
+        let prescriptions = [
+            {
+                id: 1,
+                name: "Aspirin",
+                date: "2024-10-22",
+                doctor: "Dr. Sarah Johnson",
+                supply: "30 days supply",
+                dosage: "81mg"
+            }
+        ];
+
+        let treatments = [
+            {
+                id: 1,
+                name: "Blood Pressure Management",
+                progress: 75,
+                duration: "Week 6 of 8"
+            }
+        ];
+
+        // Render functions
+        function renderMedications() {
+            const container = document.getElementById('medications-list');
+            container.innerHTML = medications.map(med => `
+                <div class="medication-item">
+                    <div class="medication-icon">💊</div>
+                    <div class="medication-info">
+                        <div class="medication-name">${med.name}</div>
+                        <div class="medication-time">${med.time} - ${med.instruction}</div>
+                    </div>
+                    <span class="status-badge status-${med.status}" 
+                          onclick="toggleMedicationStatus(${med.id})">
+                        ${med.status.charAt(0).toUpperCase() + med.status.slice(1)}
+                    </span>
+                    <button class="btn btn-edit" onclick="editMedication(${med.id})">Edit</button>
+                    <button class="btn btn-delete" onclick="deleteMedication(${med.id})">Delete</button>
+                </div>
+            `).join('');
+            updateReminder();
+        }
+
+        function renderSchedule() {
+            const container = document.getElementById('schedule-list');
+            container.innerHTML = schedules.map(schedule => `
+                <div class="schedule-item">
+                    <div class="schedule-time">${schedule.time}</div>
+                    <div class="schedule-details">
+                        <div class="medication-name">${schedule.medication}</div>
+                        <div class="medication-time">${schedule.instruction}</div>
+                    </div>
+                    <button class="btn btn-edit" onclick="editSchedule(${schedule.id})">Edit</button>
+                    <button class="btn btn-delete" onclick="deleteSchedule(${schedule.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function renderPrescriptions() {
+            const container = document.getElementById('prescription-history');
+            container.innerHTML = prescriptions.map(prescription => `
+                <div class="prescription-item">
+                    <div class="prescription-header">
+                        <div class="prescription-title">${prescription.name}</div>
+                        <div class="prescription-date">${prescription.date}</div>
+                    </div>
+                    <p>${prescription.dosage} - ${prescription.supply}</p>
+                    <p>Prescribed by: ${prescription.doctor}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTreatments() {
+            const container = document.getElementById('treatment-progress');
+            container.innerHTML = treatments.map(treatment => `
+                <div class="treatment-progress">
+                    <h3>${treatment.name}</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${treatment.progress}%"></div>
+                    </div>
+                    <p>${treatment.progress}% completion - ${treatment.duration}</p>
+                </div>
+            `).join('');
+        }
+
+        // Add new medication
+        function showAddMedicationForm() {
+            const container = document.getElementById('medication-form-container');
+            container.innerHTML = `
+                <div class="edit-form">
+                    <div class="form-group">
+                        <label>Medication Name</label>
+                        <input type="text" id="new-med-name" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="text" id="new-med-time" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Instructions</label>
+                        <input type="text" id="new-med-instruction" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Doctor</label>
+                        <input type="text" id="new-med-doctor" class="form-input">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn" onclick="addMedication()">Save</button>
+                        <button class="btn btn-delete" onclick="cancelAdd()">Cancel</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addMedication() {
+            const name = document.getElementById('new-med-name').value;
+            const time = document.getElementById('new-med-time').value;
+            const instruction = document.getElementById('new-med-instruction').value;
+            const doctor = document.getElementById('new-med-doctor').value;
+
+            if (!name || !time || !instruction || !doctor) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            const newMed = {
+                id: medications.length + 1,
+                name,
+                time,
+                instruction,
+                status: 'pending',
+                doctor
+            };
+
+            medications.push(newMed);
+            addPrescription(newMed);
+            addSchedule(newMed);
+            
+            renderAll();
+            cancelAdd();
+        }
+
+        function addPrescription(medication) {
+            const newPrescription = {
+                id: prescriptions.length + 1,
+                name: medication.name,
+                date: new Date().toISOString().split('T')[0],
+                doctor: medication.doctor,
+                supply: "30 days supply",
+                dosage: "Standard dose"
+            };
+            prescriptions.push(newPrescription);
+        }
+
+        function addSchedule(medication) {
+            const newSchedule = {
+                id: schedules.length + 1,
+                time: medication.time,
+                medication: medication.name,
+                instruction: medication.instruction
+            };
+            schedules.push(newSchedule);
+        }
+
+        // Toggle medication status
+        function toggleMedicationStatus(id) {
+            const medication = medications.find(med => med.id === id);
+            if (medication) {
+                medication.status = medication.status === 'taken' ? 'pending' : 'taken';
+                renderAll();
+            }
+        }
+
+        // Delete functions
+        function deleteMedication(id) {
+            if (confirm('Are you sure you want to delete this medication?')) {
+                medications = medications.filter(med => med.id !== id);
+                renderAll();
+            }
+        }
+
+        function deleteSchedule(id) {
+            if (confirm('Are you sure you want to delete this schedule?')) {
+                schedules = schedules.filter(schedule => schedule.id !== id);
+                renderAll();
+            }
+        }
+
+        // Edit functions
+        function editMedication(id) {
+            const med = medications.find(m => m.id === id);
+            const container = document.getElementById('medication-form-container');
+            container.innerHTML = `
+                <div class="edit-form">
+                    <div class="form-group">
+                        <label>Medication Name</label>
+                        <input type="text" id="edit-med-name" value="${med.name}" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="text" id="edit-med-time" value="${med.time}" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Instructions</label>
+                        <input type="text" id="edit-med-instruction" value="${med.instruction}" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Doctor</label>
+                        <input type="text" id="edit-med-doctor" value="${med.doctor}" class="form-input">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn" onclick="updateMedication(${id})">Update</button>
+                        <button class="btn btn-delete" onclick="cancelAdd()">Cancel</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateMedication(id) {
+            const name = document.getElementById('edit-med-name').value;
+            const time = document.getElementById('edit-med-time').value;
+            const instruction = document.getElementById('edit-med-instruction').value;
+            const doctor = document.getElementById('edit-med-doctor').value;
+
+            const medication = medications.find(med => med.id === id);
+            medication.name = name;
+            medication.time = time;
+            medication.instruction = instruction;
+            medication.doctor = doctor;
+
+            renderAll();
+            cancelAdd();
+        }
+
+        // Cancel add/edit form
+        function cancelAdd() {
+            document.getElementById('medication-form-container').innerHTML = '';
+        }
+
+        // Utility functions
+        function updateReminder() {
+            const alertContainer = document.getElementById('reminder-alert');
+            const pendingMeds = medications.filter(med => med.status === 'pending');
+            if (pendingMeds.length > 0) {
+                alertContainer.innerHTML = `<strong>Reminder:</strong> You have ${pendingMeds.length} medications to take today.`;
+                alertContainer.classList.add('active');
+            } else {
+                alertContainer.innerHTML = '';
+                alertContainer.classList.remove('active');
+            }
+        }
+
+        // Render all sections
+        function renderAll() {
+            renderMedications();
+            renderSchedule();
+            renderPrescriptions();
+            renderTreatments();
+        }
+
+        // Initialize the app
+        renderAll();
+    </script>
+</body>
+</html>

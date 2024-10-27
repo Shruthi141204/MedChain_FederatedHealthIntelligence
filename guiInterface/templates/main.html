@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Health Monitor Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #303d4e;
+            --secondary: #303d4e;
+            --accent: #2962ff;
+            --light: #e3f2fd;
+            --success: #00c853;
+            --warning: #ffd600;
+            --danger: #d50000;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #37474f;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5em;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .metric {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .metric:hover {
+            transform: scale(1.02);
+            background: #bbdefb;
+        }
+
+        .metric h3 {
+            color: var(--secondary);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.4em;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .metric-details {
+            font-size: 0.85em;
+            color: #546e7a;
+            margin-top: 5px;
+        }
+
+        .health-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-good { background: var(--success); }
+        .status-warning { background: var(--warning); }
+        .status-alert { background: var(--danger); }
+
+        .recommendations {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .recommendations h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .recommendation-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .data-visualization {
+            margin-top: 15px;
+            height: 150px;
+            background: var(--light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+        }
+
+        .alert-section {
+            background: #fff3e0;
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(41, 98, 255, 0.3);
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .feature-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list i {
+            color: var(--accent);
+        }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:hover {
+            background-color: #f8f8f8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn i {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <a href="dashboard" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Dashboard
+    </a>
+    <header>
+        <div class="container header-content">
+            <div>
+                <h1><i class="fas fa-heartbeat"></i>Health Monitor</h1>
+                <p>Comprehensive Health Tracking & Analysis</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="dashboard-grid">
+            <!-- PPG Monitoring Section -->
+            <div class="card">
+                <h2><i class="fas fa-wave-square"></i> PPG Monitoring</h2>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <h3>Heart Rate</h3>
+                        <div class="metric-value">72 BPM</div>
+                        <div class="health-status">
+                            <span class="status-indicator status-good"></span>
+                            Normal
+                        </div>
+                        <div class="metric-details">Continuous monitoring active</div>
+                    </div>
+                    <div class="metric">
+                        <h3>Respiratory Rate</h3>
+                        <div class="metric-value">16/min</div>
+                        <div class="health-status">
+                            <span class="status-indicator status-good"></span>
+                            Normal
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <h3>Blood Pressure</h3>
+                        <div class="metric-value">120/80</div>
+                        <div class="health-status">
+                            <span class="status-indicator status-good"></span>
+                            Optimal
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <h3>Stress Level</h3>
+                        <div class="metric-value">Low</div>
+                        <div class="metric-details">Based on HRV analysis</div>
+                    </div>
+                </div>
+                <div class="feature-list">
+                    <li><i class="fas fa-check"></i> Cardiovascular Health Monitoring</li>
+                    <li><i class="fas fa-check"></i> Sleep Quality Analysis</li>
+                    <li><i class="fas fa-check"></i> Continuous Blood Pressure Estimation</li>
+                </div>
+            </div>
+
+            <!-- ECG Analysis Section -->
+            <div class="card">
+                <h2><i class="fas fa-heartbeat"></i> ECG Analysis</h2>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <h3>Heart Rhythm</h3>
+                        <div class="metric-value">{{ heart_rhythm }}</div> <!-- Display predicted heart rhythm -->
+                        <div class="health-status">
+                            <span class="status-indicator status-good"></span>
+                            <!-- Change status based on prediction -->
+                            {% if heart_rhythm == 'Normal' %}
+                                Regular
+                            {% else %}
+                                Irregular
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <h3>AFib Screening</h3>
+                        <div class="metric-value">{{ af_group }}</div> <!-- Display predicted AF group -->
+                        <div class="health-status">
+                            <span class="status-indicator status-good"></span>
+                            <!-- Change status based on AF prediction -->
+                            {% if af_group == 'Group N (Non-terminating AF)' %}
+                                Monitoring Needed
+                            {% elif af_group == 'Group S (Terminates after 1 minute)' %}
+                                Possible Follow-up
+                            {% elif af_group == 'Group T (Terminates immediately)' %}
+                                Immediate Attention Required
+                            {% else %}
+                                No Issues
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="data-visualization">
+                    <h3>ECG Waveform</h3>
+                    <img src="{{ plot_image }}" alt="ECG Waveform" style="width: 60%; max-width: 300px;">
+                </div>
+                
+                
+                
+                <div class="feature-list">
+                    <li><i class="fas fa-check"></i> Arrhythmia Detection</li>
+                    <li><i class="fas fa-check"></i> Sudden Cardiac Event Monitoring</li>
+                    <li><i class="fas fa-check"></i> Post-workout Recovery Analysis</li>
+                    <li><i class="fas fa-check"></i> Event Detection (Slow/Fast Heart Rate)</li>
+                </div>
+                <div style="display: flex; justify-content: center;">
+                    <a href="{{ url_for('predict') }}" class="btn btn-primary">Predict ECG</a>
+                </div>
+                
+
+            </div>
+            
+
+            <!-- Accelerometer Section -->
+            <div class="card">
+                <h2><i class="fas fa-running"></i> Accelerometer Data</h2>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <h3>Activity Level</h3>
+                        <div class="metric-value">Moderate</div>
+                        <div class="health-status">
+                            <span class="status-indicator status-good"></span>
+                            Active
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <h3>Daily Steps</h3>
+                        <div class="metric-value">8,456</div>
+                        <div class="health-status">
+                            <span class="status-indicator status-warning"></span>
+                            Below Target
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <h3>Calories</h3>
+                        <div class="metric-value">1,845 kcal</div>
+                    </div>
+                </div>
+                <div class="feature-list">
+                    <li><i class="fas fa-check"></i> Heart Rate Variability & Stress</li>
+                    <li><i class="fas fa-check"></i> Gesture Control Monitoring</li>
+                    <li><i class="fas fa-check"></i> Posture Alert System</li>
+                    <li><i class="fas fa-check"></i> Sleep Pattern Analysis</li>
+                    <li><i class="fas fa-check"></i> Physical Movement Tracking</li>
+                </div>
+                <div class="alert-section">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Posture alert: Prolonged sitting detected
+                </div>
+            </div>
+        </div>
+
+        <!-- Personalized Recommendations Section -->
+        <div class="recommendations">
+            <h2><i class="fas fa-clipboard-list"></i> Personalized Health Recommendations</h2>
+            <div class="recommendation-grid">
+                <div class="recommendation-item">
+                    <h3><i class="fas fa-heartbeat"></i> Cardiovascular Health</h3>
+                    <ul class="feature-list">
+                        <li>Schedule 30 minutes of moderate exercise daily</li>
+                        <li>Monitor blood pressure twice daily</li>
+                        <li>Continue heart rhythm monitoring</li>
+                    </ul>
+                </div>
+                <div class="recommendation-item">
+                    <h3><i class="fas fa-utensils"></i> Dietary Recommendations</h3>
+                    <ul class="feature-list">
+                        <li>Increase potassium-rich foods</li>
+                        <li>Maintain low-sodium diet</li>
+                        <li>Stay hydrated with 8 glasses of water</li>
+                    </ul>
+                </div>
+                <div class="recommendation-item">
+                    <h3><i class="fas fa-bed"></i> Sleep & Recovery</h3>
+                    <ul class="feature-list">
+                        <li>Maintain consistent sleep schedule</li>
+                        <li>Practice relaxation before bedtime</li>
+                        <li>Avoid screen time 1 hour before sleep</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary"><i class="fas fa-download"></i> Export Health Data</button>
+            <button class="btn btn-primary"><i class="fas fa-share"></i> Share with Healthcare Provider</button>
+        </div>
+    </main>
+</body>
+</html>

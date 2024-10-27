@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Learning Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label, button, select {
+            display: block;
+            margin: 15px 0;
+        }
+        input[type="file"], button, select {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .status, .model-status {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 4px;
+        }
+        .clients {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .toggle-button {
+            background-color: #007BFF;
+        }
+        .toggle-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Federated Learning - Server Dashboard</h1>
+
+    <!-- Toggle Listening State -->
+    <button class="toggle-button" id="toggleListeningButton" onclick="toggleListening()">
+        Start Listening
+    </button>
+
+    <!-- Select Model for Training -->
+    <label for="modelSelect">Select Model:</label>
+    <select id="modelSelect">
+        <option value="ecg_model">ECG Model</option>
+        <option value="ecg_model_ARR">ECG_arrythmia Model</option>
+        <!-- Add more options here for additional models -->
+    </select>
+    
+
+    <!-- Upload CSV to train global model -->
+    <label for="csvUpload">Upload CSV to Train Global Model:</label>
+    <input type="file" id="csvUpload" accept=".csv">
+    <button onclick="uploadCSV()">Upload and Train</button>
+
+    <!-- Download Global Model -->
+    <label for="globalModel">View Current Global Model:</label>
+    <button onclick="viewGlobalModel()">Download Global Model</button>
+
+    <!-- Model Status -->
+    <div class="model-status" id="modelStatus"></div>
+
+    <!-- Online Clients -->
+    <div class="clients" id="clients">
+        <h2>Online Clients:</h2>
+        <ul id="clientList"></ul>
+    </div>
+
+    <!-- Status messages -->
+    <div class="status" id="status"></div>
+</div>
+
+<script>
+    const statusElement = document.getElementById("status");
+    const modelStatusElement = document.getElementById("modelStatus");
+    const clientList = document.getElementById("clientList");
+    const toggleButton = document.getElementById("toggleListeningButton");
+    const modelSelect = document.getElementById("modelSelect");
+
+    // Function to toggle listening state
+    function toggleListening() {
+        fetch('/toggle_listening', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.listening) {
+                updateStatus("Server is now listening for updates.");
+                toggleButton.textContent = "Stop Listening";
+            } else {
+                updateStatus("Server has stopped listening for updates.");
+                toggleButton.textContent = "Start Listening";
+            }
+        })
+        .catch(error => {
+            updateStatus("Error toggling listening state: " + error);
+        });
+    }
+
+    // Function to upload CSV and trigger model training
+    function uploadCSV() {
+        const fileInput = document.getElementById("csvUpload");
+        const file = fileInput.files[0];
+        const selectedModel = modelSelect.value;
+
+        if (!file) {
+            updateStatus("Please select a CSV file to upload.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch(`/upload_data_and_train/${selectedModel}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateStatus(data.message || "Global model trained successfully.");
+        })
+        .catch(error => {
+            updateStatus("Error uploading CSV: " + error);
+        });
+    }
+
+    // Function to view/download the global model
+    function viewGlobalModel() {
+        const selectedModel = modelSelect.value;
+
+        fetch(`/get_global_model/${selectedModel}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.model) {
+                updateStatus("Global model downloaded successfully. You can inspect it in the console.");
+                console.log("Global Model State Dict:", data.model);
+            } else {
+                updateStatus("Failed to download global model.");
+            }
+        })
+        .catch(error => {
+            updateStatus("Error downloading global model: " + error);
+        });
+    }
+
+    // Function to update the list of online clients
+    function updateClientList(clients) {
+        clientList.innerHTML = ''; // Clear existing list
+        clients.forEach(client => {
+            const listItem = document.createElement('li');
+            listItem.textContent = client; // Assuming client identifiers are strings
+            clientList.appendChild(listItem);
+        });
+    }
+
+    // Fetch and update online clients every 5 seconds
+    setInterval(() => {
+        fetch('/get_online_clients')
+        .then(response => response.json())
+        .then(data => {
+            if (data.clients) {
+                updateClientList(data.clients);
+            } else {
+                updateStatus("Failed to fetch online clients.");
+            }
+        })
+        .catch(error => {
+            updateStatus("Error fetching online clients: " + error);
+        });
+    }, 5000);
+
+    
+
+    // Helper function to update status
+    function updateStatus(message) {
+        statusElement.textContent = message;
+    }
+</script>
+
+</body>
+</html>
