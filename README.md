@@ -1,4 +1,4 @@
-## Medcare_FederatedLearning
+## MedChain_FederatedHealthIntelligence
 Using Bio-Signals which can be acquired from a smartwatch, such as the ECG, PPG, and accelerometer, a federated model is trained to provide personalized and efficient patient care in a secure environment.
 
 ## Project Name
